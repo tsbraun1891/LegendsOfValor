@@ -52,7 +52,7 @@ public class LegendsGame {
 		for(int i=0;i<party.size();i++){
 			String Hid="H"+String.valueOf(i);//Hero Piece id starts from H0
 			playerPieces.add(new Piece(party.get(i),Hid,"H"));// H represents the player's party
-			playerPieces.add(new Piece(monsterList.getRandomMonster(),Mid,"M"));// M represents the monster
+
 		}
 		this.player = new Player(playerName,playerPieces);
 
@@ -60,7 +60,6 @@ public class LegendsGame {
 		ArrayList<Piece> monsterPieces=new ArrayList<>();
 		for(int i=0;i<3;i++){// Create 3 monsters Pieces on the board
 			String Mid="M"+String.valueOf(i);//Monster Piece id starts from M0
-			playerPieces.add(new Piece(party.get(i),Mid,"H"));// H represents the player's party
 			playerPieces.add(new Piece(monsterList.getRandomMonster(),Mid,"M"));// M represents the monster
 		}
 		board = new LegendBoard(player,monsterPieces);
