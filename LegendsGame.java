@@ -51,7 +51,6 @@ public class LegendsGame {
 
 		for(int i=0;i<party.size();i++){
 			String Hid="H"+String.valueOf(i);//Hero Piece id starts from H0
-			String Mid="M"+String.valueOf(i);//Monster Piece id starts from M0
 			playerPieces.add(new Piece(party.get(i),Hid,"H"));// H represents the player's party
 			playerPieces.add(new Piece(monsterList.getRandomMonster(),Mid,"M"));// M represents the monster
 		}
