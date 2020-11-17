@@ -41,6 +41,10 @@ public class Player {
 	public Piece getPlayerPiece() {
 		return primaryPiece;
 	}
+	
+	public ArrayList<Piece> getPlayerPieces() {
+		return pieces;
+	}
 
 	public void setPlayerPiece(Piece playerPiece) {
 		if(pieces.contains(playerPiece)) {

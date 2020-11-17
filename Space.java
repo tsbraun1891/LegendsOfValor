@@ -54,6 +54,10 @@ public class Space {
 	public int getSpaceSize() {
 		return spaceSize;
 	}
+	
+	public boolean isEmpty() {
+		return this.currentPieces.isEmpty();
+	}
 
 	public String toString() {
 		return currentPieces.toString();

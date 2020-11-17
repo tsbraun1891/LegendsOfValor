@@ -120,4 +120,15 @@ public abstract class Actor{
 		return isDefeated;
 	}
 	
+	public boolean equals(Object o) {
+		if(o instanceof Actor) {
+			Actor other = (Actor) o;
+			if(other.getName().equals(this.getName())) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 }
