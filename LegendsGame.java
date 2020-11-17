@@ -62,7 +62,7 @@ public class LegendsGame {
 			String Mid="M"+String.valueOf(i);//Monster Piece id starts from M0
 			playerPieces.add(new Piece(monsterList.getRandomMonster(),Mid,"M"));// M represents the monster
 		}
-		board = new LegendBoard(player,monsterPieces);
+		this.board = new LegendBoard(player,monsterPieces);
 
 
 	}
