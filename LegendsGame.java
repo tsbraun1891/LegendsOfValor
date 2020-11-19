@@ -10,14 +10,14 @@ import javax.swing.text.html.HTMLDocument;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class LegendsGame {
+public class LegendsGame extends RPG{
 	private LegendBoard board;
 	private LegendsActions actions;
 	private ArrayList<Hero> party;
 	private ArrayList<Piece> playerPieces, monsterPieces;
 	private Battle battle;
 	
-	public LegendsGame(String playerName, int boardSize, int numPaladins, int numSorcerers, int numWarriors) {
+	public LegendsGame(String playerName, int numPaladins, int numSorcerers, int numWarriors) {
 		
 		super();
 			
@@ -49,10 +49,6 @@ public class LegendsGame {
 
 
 		monsterPieces=new ArrayList<>();
-		for(int i=0;i<3;i++){// Create 3 monsters Pieces on the board
-			String Mid="M"+String.valueOf(i);//Monster Piece id starts from M0
-			monsterPieces.add(new Piece(monsterList.getRandomMonster(),Mid,"M"));// M represents the monster
-		}
 
 		this.board = new LegendBoard(player);
 		
@@ -115,6 +111,10 @@ public class LegendsGame {
 		}
 		
 		return null;
+	}
+
+	public void addMonsterPiece(Piece piece) {
+		monsterPieces.add(piece);
 	}
 	
 	// Returns the average level of the party

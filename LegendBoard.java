@@ -20,7 +20,7 @@ public class LegendBoard extends Board{
 				if(col == 2 || col == 5) {
 					Space newSpace = new LegendSpace(LegendSpace.SpaceType.INACCESSIBLE);
 					spaces[row][col] = newSpace;
-				} else if(row == 0 || row == spaces.length) {
+				} else if(row == 0 || row == spaces.length-1) {
 					Space newSpace = new LegendSpace(LegendSpace.SpaceType.NEXUS);
 					spaces[row][col] = newSpace;
 				} else {
@@ -72,8 +72,6 @@ public class LegendBoard extends Board{
 	 * @param piece
 	 */
 	public void placePiecesAtStart() {
-		
-		System.out.println(playerPieces);
 		
 		// Place each piece in its own row starting from the left lane
 		for(int i = 0; i < playerPieces.size(); i++) {
@@ -135,11 +133,8 @@ public class LegendBoard extends Board{
 		
 		if(success != 0) {
 			this.pieceRows.put(piece, x);	
-			System.out.println("Put " + piece + " in row " + x);
 			this.pieceCols.put(piece, y);
-			System.out.println("Put " + piece + " in col " + y);
 			
-			System.out.println(pieceRows);
 		} 
 		
 		return success;
@@ -168,7 +163,7 @@ public class LegendBoard extends Board{
 	}
 
 	public String toString() {		
-		String rowline = "\n+";
+		String rowline = "\n       \t+";
 		for(int i = 0; i < this.getWidth(); i++) {
 			if(i == 2 || i == 5) {
 				rowline += "---+";
@@ -181,12 +176,13 @@ public class LegendBoard extends Board{
 
 		String rhet = "\n\n";
 		for(int i = 0; i < this.getHeight(); i++) {
-			rhet += rowline + "|";
+			rhet += rowline + "       \t|";
 			
 			LegendSpace.SpaceType type = null;
 			
 			// Each row is 3 lines high
 			// Top left corner denotes type of the square
+			
 			for(int j = 0; j < this.getWidth(); j++) {
 				type = this.getTypeOfSpace(i, j);
 				switch(type) {
@@ -216,9 +212,10 @@ public class LegendBoard extends Board{
 				}		
 			}
 			
-			rhet += "\n|";
+			rhet += "\n Row " + i + ":\t|";
 			for(int j = 0; j < this.getWidth(); j++) {
 				type = this.getTypeOfSpace(i, j);
+				
 				if(type == LegendSpace.SpaceType.INACCESSIBLE) {
 					rhet += "||||";
 				} else {
@@ -241,7 +238,7 @@ public class LegendBoard extends Board{
 							
 			}
 			
-			rhet += "\n|";			
+			rhet += "\n       \t|";			
 			for(int j = 0; j < this.getWidth(); j++) {
 				type = this.getTypeOfSpace(i, j);
 				if(type == LegendSpace.SpaceType.INACCESSIBLE) {
@@ -254,7 +251,7 @@ public class LegendBoard extends Board{
 		
 		rhet += rowline;
 		
-		rhet += "\n\n";
+		rhet += "             Col0           Col1               Col3           Col4               Col6           Col7      \n";
 		
 		return rhet;		
 	}

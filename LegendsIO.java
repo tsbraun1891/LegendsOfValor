@@ -33,81 +33,131 @@ public class LegendsIO extends IO {
 			System.out.println(map.toString());
 			
 			while(continuePlaying) {
+				boolean tookTurn = false;
+
+				while(!tookTurn) {
+					if(this.game.getBattle().isPlayerTurn()) {
+						Piece currentPiece = game.getHeroPiece((Hero) game.getBattle().getTurnActor());
 				
-				Piece currentPiece = game.getHeroPiece((Hero) game.getBattle().getTurnActor());
-				
-				System.out.print("\n\nPlease Input a command (Press H for help): ");
-				
-				String inputVal = scanner.next();	
-				
-				switch(inputVal.charAt(0)) {
-				case 'W':
-				case 'w':
-					if(!actions.move(scanner, LegendsActions.Direction.UP, currentPiece))
-						this.invalidMove();
-					break;
-					
-				case 'S':
-				case 's':
-					if(!actions.move(scanner, LegendsActions.Direction.DOWN, currentPiece))
-						this.invalidMove();
-					break;
-					
-				case 'A':
-				case 'a':
-					if(!actions.move(scanner, LegendsActions.Direction.LEFT, currentPiece))
-						this.invalidMove();
-					break;
-					
-				case 'D':
-				case 'd':
-					if(!actions.move(scanner, LegendsActions.Direction.RIGHT, currentPiece))
-						this.invalidMove();
-					break;
-					
-				case 'Q':
-				case 'q':
-					continuePlaying = false;
-					break;
-				
-				case 'H':
-				case 'h':
-					actions.getHelp();
-					break;
-					
-				case 'M':
-				case 'm':
-					actions.displayMap();
-					break;
-					
-				case 'P':
-				case 'p':
-					if(!actions.openMarket(scanner, currentPiece)) {
-						System.out.print("You are not on a market space! ");
-						this.retry();
-					}					
-					break;
-					
-				case 'I':
-				case 'i':
-					this.displayInformation();
-					break;
-					
-				case 'E':
-				case 'e':
-					this.displayInformation();
-					int heroIndex = this.safeGetInt("\nWhich hero's equipment would you like to manage? ", scanner);
-					if(!actions.manageEquipment(scanner, heroIndex)) {
-						System.out.print("Invalid hero entered. ");
-						this.retry();
+						System.out.print("\n\nPlease Input a command (Press H for help): ");
+						
+						String inputVal = scanner.next();	
+						
+						switch(inputVal.charAt(0)) {
+						case 'W':
+						case 'w':
+							tookTurn = actions.move(scanner, LegendsActions.Direction.UP, currentPiece);
+							if(!tookTurn)
+								this.invalidMove();
+							break;
+							
+						case 'S':
+						case 's':
+							tookTurn = actions.move(scanner, LegendsActions.Direction.DOWN, currentPiece);
+							if(!tookTurn)
+								this.invalidMove();
+							break;
+							
+						case 'A':
+						case 'a':
+							tookTurn = actions.move(scanner, LegendsActions.Direction.LEFT, currentPiece);
+							if(!tookTurn)
+								this.invalidMove();
+							break;
+							
+						case 'D':
+						case 'd':
+							tookTurn = actions.move(scanner, LegendsActions.Direction.RIGHT, currentPiece);
+							if(!tookTurn)
+								this.invalidMove();
+							break;
+							
+						case 'Q':
+						case 'q':
+							continuePlaying = false;
+							tookTurn = true;
+							break;
+						
+						case 'H':
+						case 'h':
+							actions.getHelp();
+							break;
+							
+						case 'M':
+						case 'm':
+							actions.displayMap();
+							break;
+							
+						case 'P':
+						case 'p':
+							if(!actions.openMarket(scanner, currentPiece)) {
+								System.out.print("You are not on a Nexus space! ");
+								this.retry();
+							}					
+							break;
+							
+						case 'I':
+						case 'i':
+							this.displayInformation();
+							break;
+							
+						case 'E':
+						case 'e':
+							this.displayInformation();
+							actions.manageEquipment(scanner, currentPiece);					
+							break;
+
+						case 'B':
+						case 'b':
+							tookTurn = actions.back(currentPiece);
+							if(!tookTurn) {
+								System.out.println("You cannot back because a hero is already at this column's nexus space!");
+							}
+							break;
+
+						case 'T':
+						case 't':
+							int row = this.safeGetInt("\nWhich row would you like to tp to? ", scanner);
+							int column = this.safeGetInt("\nWhich column would you like to tp to? ", scanner);
+
+							tookTurn = actions.teleport(currentPiece, row, column);
+							if(!tookTurn) {
+								System.out.println("\n You have entered an invalid position. \n You may only tp to different lanes behind allies and in front of enemies. \n");
+								this.retry();
+							}
+							break;
+
+						case 'F':
+						case 'f':
+							int monsterIndex = this.safeGetInt("Please insert the number (x in \'Mx\') of the monster you would like to attack: ", scanner);
+							tookTurn = actions.attack(currentPiece, this.game.getMonsterPieces().get(monsterIndex));
+							
+							if(!tookTurn)
+								System.out.println("That piece is not in range! They can at most be one space away.");
+							break;
+							
+						default:
+							System.out.print("Invalid command input. ");
+							this.retry();
+						}
+					} else {
+						// TODO: Implement Monster turn
+						// Also implement when monster dies
+						tookTurn = true;
 					}
 					
-					break;
-					
-				default:
-					System.out.print("Invalid command input. ");
-					this.retry();
 				}
+				
+				this.game.getBattle().nextTurn();
+				if(this.game.getBattle().checkBattleOver() != Battle.BattleState.ONGOING) {
+					continuePlaying = false;
+				}
+			}
+
+			if(this.game.getBattle().checkBattleOver() == Battle.BattleState.VICTORY) {
+				System.out.println("The Heroes have defeated the Monsters!");
+			} else if(this.game.getBattle().checkBattleOver() == Battle.BattleState.DEFEAT) {
+				System.out.println("The Monsters have crushed the Heroes!");
 			}
 			
 			System.out.println("Thanks for playing!");
@@ -149,7 +199,7 @@ public class LegendsIO extends IO {
 		}
 		
 		public void invalidMove() {
-			System.out.print("Invalid move direction. Tile is either inaccessible (I) or is out of bounds. ");
+			System.out.print("Invalid move direction. \nTile is either inaccessible (I), out of bounds, or full. ");
 			this.retry();
 		}
 		

@@ -63,8 +63,8 @@ public class Market {
 		}
 	}
 	
-	public void openMarket(Scanner scanner) {
-		MarketIO io = new MarketIO(this);
+	public void openMarket(Scanner scanner, Hero customer) {
+		MarketIO io = new MarketIO(this, customer);
 		
 		io.openMarket(scanner);
 	}

@@ -6,7 +6,7 @@
  */
 
 
-public class LegendsMonstersHeroes {
+public class LegendsOfValor {
 
 	public static void main(String[] args) {
 		LegendsIO mainGame = new LegendsIO();

@@ -6,7 +6,9 @@
  * @author Tanner Braun
  */
 
-
+// TODO: buff hero if they are on a space that buffs them
+// TODO: Send hero back to nexus if they faint
+// Will probably need to give hero board state
 public abstract class Hero extends Actor{
 	
 	/* The different hero classes */
@@ -119,6 +121,11 @@ public abstract class Hero extends Actor{
 	
 	public void increaseMana(double amount) {
 		this.setMana(this.getMana() + amount);
+	}
+
+	public void revive() {
+		this.isDefeated() = false;
+		// TODO: decide how much hp to give them
 	}
 
 	public void levelUp() {

@@ -14,11 +14,12 @@ import java.util.Scanner;
 public class MarketIO extends IO {
 	private Market market;
 	private boolean stayOpen;
+	private Hero customer;
 
 	
-	public MarketIO(Market market) {
+	public MarketIO(Market market, Hero hero) {
 		this.market = market;
-		
+		this.customer = hero;
 		stayOpen = true;
 	}
 	
@@ -85,20 +86,13 @@ public class MarketIO extends IO {
 
 		int itemIndex = this.safeGetInt("\n\nWhich item would you like to purchase (enter item index)? ", scanner);
 		
-		System.out.println(market.getGame().getActionHandler().displayPartyInformation());
-		int heroIndex = this.safeGetInt("\nWhich hero would you like to purchase it? ", scanner);
-		
 		if(itemIndex < 0 || itemIndex >= market.getItems().size()) {
 			System.out.print("\n\nYou have entered an invalid item. ");
 			this.retry();
-		} else if(heroIndex < 0 || heroIndex >= market.getGame().getParty().size()) {
-			System.out.print("\n\nYou have entered an invalid hero. ");
-			this.retry();
 		} else {
 			Item item = market.getItems().get(itemIndex);
-			Hero hero = market.getGame().getParty().get(heroIndex);
 			
-			if(item.buyItem(hero)) {
+			if(item.buyItem(customer)) {
 				market.getItems().remove(item);
 			}
 			
@@ -107,34 +101,24 @@ public class MarketIO extends IO {
 	}
 	
 	private void sellItem(Scanner scanner) {
+
+		Inventory heroInv = this.customer.getInventory();
 		
-		market.getGame().getActionHandler().displayPartyInformation();
-		int heroIndex = this.safeGetInt("\nWhich hero would you like to sell from? ", scanner);
+		System.out.println(heroInv.toString());
+		int itemIndex = this.safeGetInt("\n\nWhich item would you like to sell (enter item index)? ", scanner);
 		
-		if(heroIndex < 0 || heroIndex >= market.getGame().getParty().size()) {
-			System.out.print("\n\nYou have entered an invalid hero. ");
+		if(itemIndex < 0 || itemIndex >= heroInv.getItems().size()) {
+			System.out.print("\n\nYou have entered an invalid item. ");
 			this.retry();
 		} else {
+			Item item = heroInv.getItems().get(itemIndex);
 			
-			Hero hero = market.getGame().getParty().get(heroIndex);
-			Inventory heroInv = hero.getInventory();
+			heroInv.removeItem(itemIndex);
+			item.setOwner(null);
 			
-			System.out.println(heroInv.toString());
-			int itemIndex = this.safeGetInt("\n\nWhich item would you like to sell (enter item index)? ", scanner);
+			this.customer.addCoins(item.getCost()/2);
+			market.getItems().add(item);
 			
-			if(itemIndex < 0 || itemIndex >= heroInv.getItems().size()) {
-				System.out.print("\n\nYou have entered an invalid item. ");
-				this.retry();
-			} else {
-				Item item = heroInv.getItems().get(itemIndex);
-				
-				heroInv.removeItem(itemIndex);
-				item.setOwner(null);
-				
-				hero.addCoins(item.getCost()/2);
-				market.getItems().add(item);
-				
-			}			
-		}
+		}		
 	}
 }

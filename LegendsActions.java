@@ -67,7 +67,6 @@ public class LegendsActions {
 		}
 		
 		rhet = board.movePieceTo(piece, moveRow, moveCol);
-		LegendSpace.SpaceType spaceType = board.getTypeOfSpace(moveRow, moveCol);
 		
 		displayMap();
 		
@@ -82,7 +81,11 @@ public class LegendsActions {
 		System.out.println("S: Move the current hero down one space");
 		System.out.println("A: Move the current hero left one space");
 		System.out.println("D: Move the current hero right one space");
-		System.out.println("P: Open the market on your tile");
+		System.out.println("B: Move back to the beginning of this lane");
+		System.out.println("T: Teleport to another lane");
+		System.out.println("F: Attack an enemy");
+		System.out.println("C: Cast a spell at an enemy");
+		System.out.println("P: Open the market in the nexus");
 		System.out.println("E: Manage your equipment");
 		System.out.println("I: Display relevant information");
 		System.out.println("M: Display the world map");
@@ -98,7 +101,7 @@ public class LegendsActions {
 		if(board.getTypeOfSpace(board.getPieceRow(piece), board.getPieceCol(piece)) == LegendSpace.SpaceType.NEXUS) {
 			Market market = new Market(game);
 			
-			market.openMarket(scanner);
+			market.openMarket(scanner, (Hero) piece.getActor());
 			return true;
 		} else {
 			return false;
@@ -121,16 +124,12 @@ public class LegendsActions {
 		return rhet;
 	}
 	
-	public boolean manageEquipment(Scanner scanner, int heroIndex) {
-		if(heroIndex < 0 || heroIndex > game.getParty().size()) {
-			return false;
-		} else {
-			InventoryIO io = new InventoryIO(game.getParty().get(heroIndex).getInventory());
-			
-			io.openInventory(scanner);
-			
-			return true;
-		}		
+	public boolean manageEquipment(Scanner scanner, Piece piece) {
+		InventoryIO io = new InventoryIO( ((Hero)piece.getActor()).getInventory() );
+		
+		io.openInventory(scanner);
+		
+		return true;
 	}
 	
 	public boolean attack(Piece attacker, Piece target) {
@@ -154,19 +153,46 @@ public class LegendsActions {
 		}
 	}
 	
-	public void back(Piece piece) {				
-		board.removePiece(piece, board.getPieceRow(piece), board.getPieceCol(piece));
-		
-		board.placePiece(piece, board.getHeight()-1, board.getPieceCol(piece));
+	public boolean back(Piece piece) {
+		return board.movePieceTo(piece, board.getHeight()-1, board.getPieceCol(piece));
 	}
 	
-	public boolean teleport(Piece piece, int column) {
+	public boolean teleport(Piece piece, int row, int column) {
 		/* column should never be adjacent because it is then either INACESSIBLE or in the same lane */
 		if(Math.abs(board.getPieceCol(piece) - column) <= 1 || column == 2 || column == 5) {
 			return false;
 		} else {
-			// TODO
-			return false;
+
+
+			// Make sure there is no monster in front of the requested row
+			for(Piece monsterPiece : this.game.getMonsterPieces()) {
+				// If monster is in the same lane
+				if(Math.abs(board.getPieceCol(monsterPiece) - column) <= 1) {
+					// Now check if its further up than the requested row
+					if(board.getPieceRow(monsterPiece) >= row) {
+						return false;
+					}
+				}
+			}
+
+			// Now check if it is further than the furthest hero
+
+			// By starting with this as the original value, teleports to the hero nexus row will pass this check
+			int furthestHeroCol = board.getHeight()-1;
+			for(Piece heroPiece : this.game.player.getPlayerPieces()) {
+				if(Math.abs(board.getPieceCol(heroPiece) - column) <= 1) {
+					if(board.getPieceRow(heroPiece) < furthestHeroCol) {
+						furthestHeroCol = board.getPieceRow(heroPiece);
+					}
+				}
+			}
+
+			if(furthestHeroCol > row) 
+				return false;
+
+
+			// If we got here, we know that we are both in front of all the monsters in lane and behind the other heroes
+			return board.movePieceTo(piece, row, column);
 		}
 	}
 	

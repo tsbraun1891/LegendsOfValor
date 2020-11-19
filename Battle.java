@@ -71,7 +71,8 @@ public class Battle {
 		
 		this.round++;
 		
-		if(this.round % 8 == 0) {
+		// We reset on 7 since we want it to happen every 8 turns and we start at 0
+		if(this.round % 7 == 0) {
 			this.spawnNewMonsters();
 		}
 	}
@@ -123,6 +124,7 @@ public class Battle {
 	 * Handles the monster logic for when a monster does an attack
 	 */
 	public void monsterTurn() {
+		// TODO: completely change monster logic for monster turn
 		Monster monster = (Monster) this.getTurnActor();
 		
 		// Choose a random hero to attack
@@ -146,6 +148,7 @@ public class Battle {
 			this.activeCombatants.add(monster);
 			Piece piece = new Piece(monster, "M"+(this.monsters.size()-1), "A monster on the battlefield");
 			this.game.getBoard().addMonsterPiece(piece);
+			this.game.addMonsterPiece(piece);
 			// Monsters always spawn in the top row
 			this.game.getBoard().placePiece(piece, 0, i*3);
 		}
@@ -180,25 +183,22 @@ public class Battle {
 	
 	
 	public BattleState checkBattleOver() {
-		boolean allFainted = true;
-		
-		for(Hero hero : this.heroes) {
-			if(!hero.isDefeated())
-				allFainted = false;
+
+		// First check if any heroes are in the monster nexus
+		for(Piece piece : this.game.player.getPlayerPieces()) {
+			if(this.game.getBoard().getPieceRow(piece) == 0) {
+				return BattleState.VICTORY;
+			}
 		}
-		
-		if(allFainted == true) 
-			return BattleState.DEFEAT;
-		
-		allFainted = true;
-		for(Monster monster : this.monsters) {
-			if(!monster.isDefeated())
-				allFainted = false;
+
+		// Now check if any of the monsters are in the hero nexus
+		for(Piece piece : this.game.getMonsterPieces()) {
+			if(this.game.getBoard().getPieceRow(piece) == 0) {
+				return BattleState.DEFEAT;
+			}
 		}
-		
-		if(allFainted == true)
-			return BattleState.VICTORY;
-		
+
+		// If no one is in either of the nexi, the battle is ongoing		
 		return BattleState.ONGOING;
 	}
 	
