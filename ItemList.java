@@ -89,19 +89,35 @@ public class ItemList {
 	}
 	
 	public Weapon getRandomWeapon() {
-		return weaponList.get(r.nextInt(weaponList.size()));
+		Weapon w = weaponList.get(r.nextInt(weaponList.size()));
+		return new Weapon(w.getName(), w.getCost(), w.getRequiredLevel(), w.getDamage(), w.getRequiredHands());
 	}
 	
 	public Armor getRandomArmor() {
-		return armorList.get(r.nextInt(armorList.size()));
+		Armor a = armorList.get(r.nextInt(armorList.size()));
+		return new Armor(a.getName(), a.getCost(), a.getRequiredLevel(), a.getDamageReduction());
 	}
 	
 	public Spell getRandomSpell() {
-		return spellList.get(r.nextInt(spellList.size()));
+		Spell s = spellList.get(r.nextInt(spellList.size()));
+		switch(s.getSpellType()) {
+		case FIRE:
+			return new FireSpell(s.getName(), s.getCost(), s.getRequiredLevel(), s.getDamage(), s.getManaCost());
+			
+		case ICE:
+			return new IceSpell(s.getName(), s.getCost(), s.getRequiredLevel(), s.getDamage(), s.getManaCost());
+			
+		case LIGHTNING:
+			return new LightningSpell(s.getName(), s.getCost(), s.getRequiredLevel(), s.getDamage(), s.getManaCost());
+			
+			default:
+				return null;
+		}
 	}
 	
 	public Potion getRandomPotion() {
-		return potionList.get(r.nextInt(potionList.size()));
+		Potion p = potionList.get(r.nextInt(potionList.size()));
+		return new Potion(p.getName(), p.getCost(), p.getRequiredLevel(), p.getAffectAmount(), p.getAttributes());
 	}
 	 
 }

@@ -98,17 +98,7 @@ public class MarketIO extends IO {
 			Item item = market.getItems().get(itemIndex);
 			Hero hero = market.getGame().getParty().get(heroIndex);
 			
-			if(hero.getCoins() < item.getCost()) {
-				System.out.println("\n\n" + hero.getName() + " does not have enough money for " + item.getName() + "!");
-			} else if(!item.canBuyItem(hero)) {
-				System.out.println("\n\n" + hero.getName() + " is not high enough level to buy " + item.getName() + "!");
-			} else {
-				Inventory heroInv = hero.getInventory();
-				
-				heroInv.addItem(item);
-				item.setOwner(hero);
-				
-				hero.removeCoins(item.getCost());
+			if(item.buyItem(hero)) {
 				market.getItems().remove(item);
 			}
 			

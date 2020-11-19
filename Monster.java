@@ -29,13 +29,12 @@ public class Monster extends Actor{
 		this.monsterType = monsterType;
 	}
 
-		
 	/**
 	 * Does damage to a given actor
 	 * @param target - The actor to be attacked
 	 * @return whether the attack was successful or not
 	 */
-	public boolean attackActor(Actor target) {
+	public boolean attack(Actor target) {
 		System.out.println("\n\n" + this.getName() + " attacks " + target.getName() + "... ");
 		
 		if(!target.tryToDodge()) {
@@ -47,7 +46,6 @@ public class Monster extends Actor{
 			System.out.println("\n" + this.getName() + "'s attack against " + target.getName() + " missed!");
 			return false;
 		}
-		
 	}
 	
 	public double getDamage() {

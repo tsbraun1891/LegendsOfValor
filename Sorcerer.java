@@ -9,8 +9,8 @@
 
 public class Sorcerer extends Hero{
 
-	public Sorcerer(String name, double startingMana, int startStrength, int startAgility,
-			int startDexterity, int startingMoney, int startingXP) {
+	public Sorcerer(String name, double startingMana, double startStrength, double startAgility,
+			double startDexterity, double startingMoney, double startingXP) {
 		super(name, startingMana, startStrength, startAgility, startDexterity, startingMoney, startingXP, Hero.HeroClass.SORCERER);
 	}
 

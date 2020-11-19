@@ -20,15 +20,18 @@ public class Battle {
 	private ArrayList<Hero> heroes;
 	private ArrayList<Monster> monsters;
 	private ArrayList<Actor> activeCombatants;
-	private int turn;
+	private int turn, round;
+	private LegendsGame game;
 	
-	public Battle(ArrayList<Hero> party, ArrayList<Monster> monsters) {
+	public Battle(LegendsGame game, ArrayList<Hero> party) {
 		this.heroes = party;
-		this.monsters = monsters;
 		this.activeCombatants = new ArrayList<>();
 		this.activeCombatants.addAll(heroes);
-		this.activeCombatants.addAll(monsters);
+		this.monsters = new ArrayList<>();
 		this.turn = 0;
+		this.round = 0;
+		this.game = game;
+		this.spawnNewMonsters();
 	}
 	
 	public void startBattle(Scanner scanner) {
@@ -64,6 +67,12 @@ public class Battle {
 	public void endOfRound() {
 		for(Hero hero : heroes) {
 			hero.recuperate();
+		}
+		
+		this.round++;
+		
+		if(this.round % 8 == 0) {
+			this.spawnNewMonsters();
 		}
 	}
 	
@@ -125,7 +134,21 @@ public class Battle {
 			target = this.heroes.get(r.nextInt(this.heroes.size()));
 		}
 		
-		monster.attackActor(target);		
+		monster.attack(target);		
+	}
+	
+	public void spawnNewMonsters() {
+		ArrayList<Monster> newMonsters = this.game.getMonsterList().getRandomListOfMonstersBetweenLevels(this.heroes.size(), this.game.getPartyLevel(), this.game.getPartyLevel());
+		
+		for(int i = 0; i < newMonsters.size(); i++) {
+			Monster monster = newMonsters.get(i);
+			this.monsters.add(monster);
+			this.activeCombatants.add(monster);
+			Piece piece = new Piece(monster, "M"+(this.monsters.size()-1), "A monster on the battlefield");
+			this.game.getBoard().addMonsterPiece(piece);
+			// Monsters always spawn in the top row
+			this.game.getBoard().placePiece(piece, 0, i*3);
+		}
 	}
 	
 	public void resolveBattle() {

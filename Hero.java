@@ -83,24 +83,28 @@ public abstract class Hero extends Actor{
 	 * Attack a given actor with all of the weapons that the hero is holding.
 	 * @param target
 	 */
-	public void attack(Monster target) {
+	public boolean attack(Actor target) {
 		System.out.println("\n\n" + this.getName() + " attacks " + target.getName() + "... ");
+		boolean allSuccess = true;
 		for(Weapon weapon : this.inventory.getEquippedWeapons()) {
-			weapon.attackTarget(target);
+			allSuccess = allSuccess && weapon.attackTarget(target);
 		}
 		
 		if(inventory.getEquippedWeapons().isEmpty()) {
-			this.unarmedAttack(target);
+			return this.unarmedAttack(target);
+		} else {
+			return allSuccess;
 		}
 	}
 	
-	private void unarmedAttack(Actor target) {
+	private boolean unarmedAttack(Actor target) {
 		if(!target.tryToDodge()) {
 				
 			target.takeDamage(this.getStrength());
-						
+			return true;						
 		} else {
 			System.out.println("\n" + this.getName() + "'s attack against " + target.getName() + " missed!");
+			return false;
 		}
 	}
 	
@@ -192,19 +196,6 @@ public abstract class Hero extends Actor{
 	
 	public void endOfRoundRegain() {
 		
-	}
-	
-	public boolean equals(Object o) {
-		if(o instanceof Hero) {
-			Hero other = (Hero) o;
-			
-			if(other.getClass() == this.getClass() && other.getName().equals(this.getName()))
-				return true;
-			else
-				return false;
-		} else {
-			return false;
-		}
 	}
 	
 	public String toString() {

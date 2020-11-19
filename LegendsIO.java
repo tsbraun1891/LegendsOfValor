@@ -21,6 +21,7 @@ public class LegendsIO extends IO {
 		public void runGame() {
 			Scanner scanner = new Scanner(System.in);
 			
+			
 			this.getStartingInfo(scanner);
 			
 			continuePlaying = true;
@@ -32,6 +33,9 @@ public class LegendsIO extends IO {
 			System.out.println(map.toString());
 			
 			while(continuePlaying) {
+				
+				Piece currentPiece = game.getHeroPiece((Hero) game.getBattle().getTurnActor());
+				
 				System.out.print("\n\nPlease Input a command (Press H for help): ");
 				
 				String inputVal = scanner.next();	
@@ -39,25 +43,25 @@ public class LegendsIO extends IO {
 				switch(inputVal.charAt(0)) {
 				case 'W':
 				case 'w':
-					if(!actions.move(scanner, LegendsActions.Direction.UP))
+					if(!actions.move(scanner, LegendsActions.Direction.UP, currentPiece))
 						this.invalidMove();
 					break;
 					
 				case 'S':
 				case 's':
-					if(!actions.move(scanner, LegendsActions.Direction.DOWN))
+					if(!actions.move(scanner, LegendsActions.Direction.DOWN, currentPiece))
 						this.invalidMove();
 					break;
 					
 				case 'A':
 				case 'a':
-					if(!actions.move(scanner, LegendsActions.Direction.LEFT))
+					if(!actions.move(scanner, LegendsActions.Direction.LEFT, currentPiece))
 						this.invalidMove();
 					break;
 					
 				case 'D':
 				case 'd':
-					if(!actions.move(scanner, LegendsActions.Direction.RIGHT))
+					if(!actions.move(scanner, LegendsActions.Direction.RIGHT, currentPiece))
 						this.invalidMove();
 					break;
 					
@@ -78,7 +82,7 @@ public class LegendsIO extends IO {
 					
 				case 'P':
 				case 'p':
-					if(!actions.openMarket(scanner)) {
+					if(!actions.openMarket(scanner, currentPiece)) {
 						System.out.print("You are not on a market space! ");
 						this.retry();
 					}					
@@ -111,7 +115,7 @@ public class LegendsIO extends IO {
 		}
 		
 		private void displayInformation() {
-			System.out.println(actions.displayPartyInformation());
+			System.out.println(this.game.getBattle().toString());
 		}
 		
 		
@@ -121,11 +125,6 @@ public class LegendsIO extends IO {
 			System.out.print("What is your name, adventurer? ");
 			
 			String playerName = scanner.nextLine();
-			
-			int boardSize = this.safeGetInt("\nWhat would you like the size of your board to be? ", scanner);
-			if(boardSize <= 0) {
-				boardSize = 1;
-			}
 			
 			int numHeroes = 0, numPal, numSorc, numWar;
 			
@@ -146,7 +145,7 @@ public class LegendsIO extends IO {
 			} while(numHeroes > 3 || numHeroes < 1);
 			
 			
-			game = new LegendsGame(playerName, boardSize, numPal, numSorc, numWar);
+			game = new LegendsGame(playerName, numPal, numSorc, numWar);
 		}
 		
 		public void invalidMove() {

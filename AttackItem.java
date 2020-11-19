@@ -37,7 +37,7 @@ public abstract class AttackItem extends Item{
 	 * @param target - The actor to be attacked
 	 * @return whether the attack was successful or not
 	 */
-	public boolean attackTarget(Monster target) {
+	public boolean attackTarget(Actor target) {
 		
 		if(!target.tryToDodge()) {
 			if(this.getOwner() == null) {

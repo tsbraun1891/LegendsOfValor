@@ -8,7 +8,7 @@
  *
  */
 
-public abstract class Item {
+public abstract class Item implements Buyable{
 	
 	/* Item Types */
 	public static enum ItemType {
@@ -43,6 +43,24 @@ public abstract class Item {
 	
 	public boolean equals(Item other) {
 		return this.type == other.getType() && this.name.equals(other.getName());
+	}
+	
+	public boolean buyItem(Hero hero) {
+		if(hero.getCoins() < this.getCost()) {
+			System.out.println("\n\n" + hero.getName() + " does not have enough money for " + this.getName() + "!");
+			return false;
+		} else if(!this.canBuyItem(hero)) {
+			System.out.println("\n\n" + hero.getName() + " is not high enough level to buy " + this.getName() + "!");
+			return false;
+		} else {
+			Inventory heroInv = hero.getInventory();
+			
+			heroInv.addItem(this);
+			this.setOwner(hero);
+			
+			hero.removeCoins(this.getCost());
+			return true;
+		}
 	}
 	
 	

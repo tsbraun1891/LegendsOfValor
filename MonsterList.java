@@ -60,7 +60,8 @@ public class MonsterList {
 	}
 	
 	public Monster getRandomMonster() {
-		return monsters.get(r.nextInt(monsters.size()));
+		Monster monster = monsters.get(r.nextInt(monsters.size()));
+		return new Monster(monster.getName(), monster.getLevel(), monster.getDamage(), monster.getDefense(), monster.getDodgeChance(), monster.getType());
 	}
 	
 	public Monster getRandomMonsterUnderLevel(int maxLevel) {
@@ -70,7 +71,7 @@ public class MonsterList {
 			monster = monsters.get(r.nextInt(monsters.size()));
 		}
 		
-		return monster;
+		return new Monster(monster.getName(), monster.getLevel(), monster.getDamage(), monster.getDefense(), monster.getDodgeChance(), monster.getType());
 	}
 	
 	public Monster getRandomMonsterBetweenLevels(int levelMin, int maxLevel) {
@@ -80,7 +81,7 @@ public class MonsterList {
 			monster = monsters.get(r.nextInt(monsters.size()));
 		}
 		
-		return monster;
+		return new Monster(monster.getName(), monster.getLevel(), monster.getDamage(), monster.getDefense(), monster.getDodgeChance(), monster.getType());
 	}
 	
 	public ArrayList<Monster> getRandomListOfMonsters(int listSize) {

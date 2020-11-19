@@ -46,14 +46,17 @@ public class HeroList {
 	}
 	
 	public Paladin getRandomPaladin() {
-		return paladins.get(r.nextInt(paladins.size()));
+		Paladin p = paladins.get(r.nextInt(paladins.size()));
+		return new Paladin(p.getName(), p.getMana(), p.getStrength(), p.getAgility(), p.getDexterity(), p.getCoins(), p.getXP());
 	}
 	
 	public Sorcerer getRandomSorcerer() {
-		return sorcerers.get(r.nextInt(sorcerers.size()));
+		Sorcerer p = sorcerers.get(r.nextInt(sorcerers.size()));
+		return new Sorcerer(p.getName(), p.getMana(), p.getStrength(), p.getAgility(), p.getDexterity(), p.getCoins(), p.getXP());
 	}
 	
 	public Warrior getRandomWarrior() {
-		return warriors.get(r.nextInt(warriors.size()));
+		Warrior p = warriors.get(r.nextInt(warriors.size()));
+		return new Warrior(p.getName(), p.getMana(), p.getStrength(), p.getAgility(), p.getDexterity(), p.getCoins(), p.getXP());
 	}
 }

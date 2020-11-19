@@ -21,13 +21,11 @@ public class LegendsActions {
 	private LegendsGame game;
 	private Player player;
 	private LegendBoard board;
-	private final double battleProbability;
 	
 	public LegendsActions(LegendsGame game, Player player, LegendBoard board) {
 		this.game = game;
 		this.player = player;
 		this.board = board;
-		this.battleProbability = .75;
 	}
 	
 	/**
@@ -36,29 +34,29 @@ public class LegendsActions {
 	 * @param direction - direction to move the party in
 	 * @return whether or not this was a valid move
 	 */
-	public boolean move(Scanner scanner, Direction direction) {
+	public boolean move(Scanner scanner, Direction direction, Piece piece) {
 		boolean rhet;
 		int moveRow, moveCol;
 		
 		switch(direction) {
 		case UP:
-			moveRow = board.playerRow()-1;
-			moveCol = board.playerCol();
+			moveRow = board.getPieceRow(piece)-1;
+			moveCol = board.getPieceCol(piece);
 			break;
 			
 		case DOWN:
-			moveRow = board.playerRow()+1;
-			moveCol = board.playerCol();
+			moveRow = board.getPieceRow(piece)+1;
+			moveCol = board.getPieceCol(piece);
 			break;
 			
 		case LEFT:
-			moveRow = board.playerRow();
-			moveCol = board.playerCol()-1;
+			moveRow = board.getPieceRow(piece);
+			moveCol = board.getPieceCol(piece)-1;
 			break;
 			
 		case RIGHT:
-			moveRow = board.playerRow();
-			moveCol = board.playerCol()+1;
+			moveRow = board.getPieceRow(piece);
+			moveCol = board.getPieceCol(piece)+1;
 			break;
 			
 		default:
@@ -68,19 +66,11 @@ public class LegendsActions {
 			return false;
 		}
 		
-		rhet = board.movePartyTo(moveRow, moveCol);
+		rhet = board.movePieceTo(piece, moveRow, moveCol);
 		LegendSpace.SpaceType spaceType = board.getTypeOfSpace(moveRow, moveCol);
 		
 		displayMap();
 		
-		// If the move was successful, a battle might start
-		if(rhet && spaceType == LegendSpace.SpaceType.COMMON) {
-			if(Math.random() < this.battleProbability) {
-				Battle battle = new Battle(this.game.getParty(), this.game.getMonsterList().getRandomListOfMonstersBetweenLevels(this.game.getParty().size(), this.game.getPartyLevel()-1, this.game.getPartyLevel()+2));
-				
-				battle.startBattle(scanner);
-			}
-		}
 		
 		return rhet;
 	}
@@ -88,10 +78,10 @@ public class LegendsActions {
 	
 	public void getHelp() {
 		System.out.println("\nActions you can take:");
-		System.out.println("W: Move the party up one space");
-		System.out.println("S: Move the party down one space");
-		System.out.println("A: Move the party left one space");
-		System.out.println("D: Move the party right one space");
+		System.out.println("W: Move the current hero up one space");
+		System.out.println("S: Move the current hero down one space");
+		System.out.println("A: Move the current hero left one space");
+		System.out.println("D: Move the current hero right one space");
 		System.out.println("P: Open the market on your tile");
 		System.out.println("E: Manage your equipment");
 		System.out.println("I: Display relevant information");
@@ -104,8 +94,8 @@ public class LegendsActions {
 	 * @param scanner - The scanner object that you are using to get input from the market
 	 * @return True if the player was on a space with a market, false otherwise
 	 */
-	public boolean openMarket(Scanner scanner) {
-		if(board.getTypeOfSpace(board.playerRow(), board.playerCol()) == LegendSpace.SpaceType.MARKET) {
+	public boolean openMarket(Scanner scanner, Piece piece) {
+		if(board.getTypeOfSpace(board.getPieceRow(piece), board.getPieceCol(piece)) == LegendSpace.SpaceType.NEXUS) {
 			Market market = new Market(game);
 			
 			market.openMarket(scanner);
@@ -141,6 +131,43 @@ public class LegendsActions {
 			
 			return true;
 		}		
+	}
+	
+	public boolean attack(Piece attacker, Piece target) {
+		
+		if(board.inAttackRange(attacker, target)) {
+			game.getBattle().playerAttack((Monster) target.getActor());
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	
+	public boolean castSpell(Piece attacker, Piece target, Spell spell) {
+		if(board.inAttackRange(attacker, target)) {
+			this.game.getBattle().playerSpell((Monster) target.getActor(), spell);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public void back(Piece piece) {				
+		board.removePiece(piece, board.getPieceRow(piece), board.getPieceCol(piece));
+		
+		board.placePiece(piece, board.getHeight()-1, board.getPieceCol(piece));
+	}
+	
+	public boolean teleport(Piece piece, int column) {
+		/* column should never be adjacent because it is then either INACESSIBLE or in the same lane */
+		if(Math.abs(board.getPieceCol(piece) - column) <= 1 || column == 2 || column == 5) {
+			return false;
+		} else {
+			// TODO
+			return false;
+		}
 	}
 	
 	public void displayMap() {

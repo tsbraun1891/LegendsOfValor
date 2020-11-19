@@ -18,18 +18,14 @@ public class LegendsGame {
 	private LegendsActions actions;
 	private Player player;
 	private ArrayList<Hero> party;
+	private ArrayList<Piece> playerPieces, monsterPieces;
+	private Battle battle;
 	
-	public LegendsGame(String playerName, int boardSize, int numPaladins, int numSorcerers, int numWarriors) {
-
-
-		
+	public LegendsGame(String playerName, int numPaladins, int numSorcerers, int numWarriors) {
 		itemList = new ItemList();
 		heroList = new HeroList();
 		monsterList = new MonsterList();
 		
-
-		
-		actions = new LegendsActions(this, player, board);
 		
 		party = new ArrayList<Hero>();
 		
@@ -47,7 +43,7 @@ public class LegendsGame {
 
 
 
-		ArrayList<Piece> playerPieces=new ArrayList<>();
+		playerPieces=new ArrayList<>();
 		for(int i=0;i<party.size();i++){
 			String Hid="H"+String.valueOf(i);//Hero Piece id starts from H0
 			playerPieces.add(new Piece(party.get(i),Hid,"H"));// H represents the player's party
@@ -56,14 +52,17 @@ public class LegendsGame {
 		this.player = new Player(playerName,playerPieces);
 
 
-		ArrayList<Piece> monsterPieces=new ArrayList<>();
+		monsterPieces=new ArrayList<>();
 		for(int i=0;i<3;i++){// Create 3 monsters Pieces on the board
 			String Mid="M"+String.valueOf(i);//Monster Piece id starts from M0
-			playerPieces.add(new Piece(monsterList.getRandomMonster(),Mid,"M"));// M represents the monster
+			monsterPieces.add(new Piece(monsterList.getRandomMonster(),Mid,"M"));// M represents the monster
 		}
-		this.board = new LegendBoard(player,monsterPieces);
 
-
+		this.board = new LegendBoard(player);
+		
+		battle = new Battle(this, party);
+		
+		actions = new LegendsActions(this, player, board);
 	}
 	
 	
@@ -85,6 +84,48 @@ public class LegendsGame {
 
 	public MonsterList getMonsterList() {
 		return monsterList;
+	}
+	
+	public ArrayList<Piece> getPlayerPieces() {
+		return this.playerPieces;
+	}
+	
+	public ArrayList<Piece> getMonsterPieces() {
+		return this.monsterPieces;
+	}
+	
+	public Battle getBattle() {
+		return this.battle;
+	}
+	
+	/**
+	 * Find the piece related to the specified hero
+	 * @param hero
+	 * @return the piece, or null if there is no piece related to the hero
+	 */
+	public Piece getHeroPiece(Hero hero) {
+		for(Piece piece : this.playerPieces) {
+			if(piece.getActor().equals(hero)) {
+				return piece;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Find the piece related to the specified monster
+	 * @param monster
+	 * @return the piece, or null if there is no piece related to the monster
+	 */
+	public Piece getMonsterPiece(Monster monster) {
+		for(Piece piece : this.monsterPieces) {
+			if(piece.getActor().equals(monster)) {
+				return piece;
+			}
+		}
+		
+		return null;
 	}
 	
 	// Returns the average level of the party

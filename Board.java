@@ -45,7 +45,7 @@ public class Board {
 	 * @param y     - the column to place the piece in
 	 * @return returns 1 on successful placement, and 0 on illegal move
 	 */
-	public int addPiece(Piece piece, int x, int y) {
+	public int placePiece(Piece piece, int x, int y) {
 		if(x >= getHeight() || y >= getWidth()) {
 			return 0;
 		} else {

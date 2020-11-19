@@ -6,11 +6,12 @@
  *
  */
 
-public abstract class Actor{
+public abstract class Actor implements Fighter{
 	private String name;
 	private double HP, defense, dodgeChance;
-	private int level;
+	private int level, id;
 	private boolean isDefeated;
+	private static int numActors = 0;
 	
 	/**
 	 * Creates a new actor with the given parameters
@@ -27,7 +28,11 @@ public abstract class Actor{
 		this.defense = defense;
 		this.dodgeChance = dodgeChance * .01;
 		this.isDefeated = false;
+		this.id = numActors;
+		numActors++;
 	}
+	
+	abstract public boolean attack(Actor target);
 	
 	/**
 	 * Do damage to this actor. This will reduce incoming damage by defense, and
@@ -120,10 +125,14 @@ public abstract class Actor{
 		return isDefeated;
 	}
 	
+	public int getId() {
+		return this.id;
+	}
+	
 	public boolean equals(Object o) {
 		if(o instanceof Actor) {
 			Actor other = (Actor) o;
-			if(other.getName().equals(this.getName())) {
+			if(other.getId() == this.getId()) {
 				return true;
 			}
 		}

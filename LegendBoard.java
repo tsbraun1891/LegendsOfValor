@@ -2,12 +2,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LegendBoard extends Board{
-	private int playerRow, playerCol;
 	private ArrayList<Piece> playerPieces, monsterPieces;
 	private int size;
-	private HashMap<Piece, Space> piecePositions;
+	private HashMap<Piece, Integer> pieceRows, pieceCols;
 	
-	public LegendBoard(Player player, ArrayList<Piece> monsterPieces) {
+	public LegendBoard(Player player) {
 		super();
 		size = 8;
 		spaces = new Space[size][size];
@@ -19,7 +18,7 @@ public class LegendBoard extends Board{
 				
 				
 				if(col == 2 || col == 5) {
-					Space newSpace = new LegendSpace(LegendSpace.SpaceType.PLAIN);
+					Space newSpace = new LegendSpace(LegendSpace.SpaceType.INACCESSIBLE);
 					spaces[row][col] = newSpace;
 				} else if(row == 0 || row == spaces.length) {
 					Space newSpace = new LegendSpace(LegendSpace.SpaceType.NEXUS);
@@ -44,9 +43,10 @@ public class LegendBoard extends Board{
 			}
 		}
 		
-		this.monsterPieces = monsterPieces;
+		this.monsterPieces = new ArrayList<Piece>();
 		this.playerPieces = player.getPlayerPieces();
-		this.piecePositions = new HashMap<Piece, Space>();
+		this.pieceRows = new HashMap<Piece, Integer>();
+		this.pieceCols = new HashMap<Piece, Integer>();
 		
 		// Place the player's starting piece
 		this.placePiecesAtStart();		
@@ -73,10 +73,11 @@ public class LegendBoard extends Board{
 	 */
 	public void placePiecesAtStart() {
 		
+		System.out.println(playerPieces);
+		
 		// Place each piece in its own row starting from the left lane
 		for(int i = 0; i < playerPieces.size(); i++) {
-			this.addPiece(playerPieces.get(i), spaces.length, i*3);
-			this.addPiece(monsterPieces.get(i), 0, i*3);
+			this.placePiece(playerPieces.get(i), spaces.length-1, i*3);
 		}
 	}
 	
@@ -96,9 +97,9 @@ public class LegendBoard extends Board{
 			
 			// If no one is on the space, you are clear to move
 			if(space.isEmpty()) {
-				this.removePiece(piece, playerRow, playerCol);
+				this.removePiece(piece, this.getPieceRow(piece), this.getPieceCol(piece));
 				
-				this.addPiece(piece, row, col);
+				this.placePiece(piece, row, col);
 				
 				return true;
 			} 
@@ -114,9 +115,9 @@ public class LegendBoard extends Board{
 			}
 			
 			
-			this.removePiece(piece, playerRow, playerCol);
+			this.removePiece(piece, this.getPieceRow(piece), this.getPieceCol(piece));
 			
-			this.addPiece(piece, row, col);		
+			this.placePiece(piece, row, col);		
 			
 			return true;
 			
@@ -128,31 +129,51 @@ public class LegendBoard extends Board{
 	/**
 	 * Does the same functionality as parent and also updates the map linking pieces to positions
 	 */
-	public int addPiece(Piece piece, int x, int y) {
-		int success = super.addPiece(piece, x, y);	
+	public int placePiece(Piece piece, int x, int y) {
+		int success = super.placePiece(piece, x, y);	
+		
 		
 		if(success != 0) {
-			this.piecePositions.put(piece, spaces[x][y]);
+			this.pieceRows.put(piece, x);	
+			System.out.println("Put " + piece + " in row " + x);
+			this.pieceCols.put(piece, y);
+			System.out.println("Put " + piece + " in col " + y);
+			
+			System.out.println(pieceRows);
 		} 
 		
 		return success;
 	}
 	
-	public int playerRow() {
-		return playerRow;
+	/**
+	 * Checks if attacker is at most 1 space away or diagonal from their intended target
+	 * @param attacker
+	 * @param target
+	 * @return
+	 */
+	public boolean inAttackRange(Piece attacker, Piece target) {
+		return Math.abs(this.getPieceRow(attacker) - this.getPieceRow(target)) <= 1 && Math.abs(this.getPieceCol(attacker) - this.getPieceCol(target)) <= 1;
 	}
 	
-	public int playerCol() {
-		return playerCol;
+	public void addMonsterPiece(Piece monsterPiece) {
+		this.monsterPieces.add(monsterPiece);
+	}
+	
+	public int getPieceRow(Piece piece) {
+		return this.pieceRows.get(piece);
+	}
+	
+	public int getPieceCol(Piece piece) {
+		return this.pieceCols.get(piece);
 	}
 
 	public String toString() {		
 		String rowline = "\n+";
 		for(int i = 0; i < this.getWidth(); i++) {
 			if(i == 2 || i == 5) {
-				
-			} else {
 				rowline += "---+";
+			} else {
+				rowline += "--------------+";
 			}
 			
 		}
@@ -170,11 +191,11 @@ public class LegendBoard extends Board{
 				type = this.getTypeOfSpace(i, j);
 				switch(type) {
 				case PLAIN:
-					rhet += "P             |";
+					rhet += " P            |";
 					break;
 					
 				case NEXUS:
-					rhet += "N             |";
+					rhet += " N            |";
 					break;
 					
 				case INACCESSIBLE:
@@ -182,34 +203,35 @@ public class LegendBoard extends Board{
 					break;
 					
 				case BUSH:
-					rhet += "B             |";
+					rhet += " B            |";
 					break;
 					
 				case CAVE:
-					rhet += "C             |";
+					rhet += " C            |";
 					break;
 					
 				case KOULOU:
-					rhet += "K             |";
+					rhet += " K            |";
 					break;
 				}		
 			}
 			
 			rhet += "\n|";
 			for(int j = 0; j < this.getWidth(); j++) {
+				type = this.getTypeOfSpace(i, j);
 				if(type == LegendSpace.SpaceType.INACCESSIBLE) {
 					rhet += "||||";
 				} else {
 					if(this.getPieces(i, j).isEmpty()) {
 						rhet += "              |";
 					} else {
-						if(this.getPieces(i, j).get(0) != null) {
+						if(this.getPieces(i, j).size() != 0 && !this.getPieces(i, j).get(0).getActor().isDefeated()) {
 							rhet += "   " + this.getPieces(i, j).get(0);
 						} else {
 							rhet += "     ";
 						}
 						
-						if(this.getPieces(i, j).get(1) != null) {
+						if(this.getPieces(i, j).size() >= 2 && !this.getPieces(i, j).get(1).getActor().isDefeated()) {
 							rhet += "   " + this.getPieces(i, j).get(1) + "    |";
 						} else {
 							rhet += "         |";
@@ -221,6 +243,7 @@ public class LegendBoard extends Board{
 			
 			rhet += "\n|";			
 			for(int j = 0; j < this.getWidth(); j++) {
+				type = this.getTypeOfSpace(i, j);
 				if(type == LegendSpace.SpaceType.INACCESSIBLE) {
 					rhet += "||||";
 				} else {
