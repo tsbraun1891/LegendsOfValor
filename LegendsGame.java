@@ -11,21 +11,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class LegendsGame {
-	private ItemList itemList;
-	private HeroList heroList;
-	private MonsterList monsterList;
 	private LegendBoard board;
 	private LegendsActions actions;
-	private Player player;
 	private ArrayList<Hero> party;
 	private ArrayList<Piece> playerPieces, monsterPieces;
 	private Battle battle;
 	
-	public LegendsGame(String playerName, int numPaladins, int numSorcerers, int numWarriors) {
-		itemList = new ItemList();
-		heroList = new HeroList();
-		monsterList = new MonsterList();
+	public LegendsGame(String playerName, int boardSize, int numPaladins, int numSorcerers, int numWarriors) {
 		
+		super();
+			
+		actions = new LegendsActions(this, player, board);
 		
 		party = new ArrayList<Hero>();
 		
@@ -78,13 +74,6 @@ public class LegendsGame {
 		return party;
 	}
 
-	public ItemList getItemList() {
-		return itemList;
-	}
-
-	public MonsterList getMonsterList() {
-		return monsterList;
-	}
 	
 	public ArrayList<Piece> getPlayerPieces() {
 		return this.playerPieces;
