@@ -11,24 +11,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class LegendsGame {
-	private ItemList itemList;
-	private HeroList heroList;
-	private MonsterList monsterList;
 	private LegendBoard board;
 	private LegendsActions actions;
-	private Player player;
 	private ArrayList<Hero> party;
 	
 	public LegendsGame(String playerName, int boardSize, int numPaladins, int numSorcerers, int numWarriors) {
-
-
 		
-		itemList = new ItemList();
-		heroList = new HeroList();
-		monsterList = new MonsterList();
-		
-
-		
+		super();
+			
 		actions = new LegendsActions(this, player, board);
 		
 		party = new ArrayList<Hero>();
@@ -79,13 +69,6 @@ public class LegendsGame {
 		return party;
 	}
 
-	public ItemList getItemList() {
-		return itemList;
-	}
-
-	public MonsterList getMonsterList() {
-		return monsterList;
-	}
 	
 	// Returns the average level of the party
 	public int getPartyLevel() {
