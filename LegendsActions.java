@@ -148,7 +148,13 @@ public class LegendsActions {
 	
 	
 	
-	public boolean castSpell(Piece attacker, Piece target, Spell spell) {
+	public boolean castSpell(Piece attacker, int monsterIndex, Spell spell) {
+		if(monsterIndex >= this.game.getMonsterPieces().size() || monsterIndex < 0) {
+			return false;
+		} 
+
+		Piece target = this.game.getMonsterPieces().get(monsterIndex);
+
 		if(board.inAttackRange(attacker, target)) {
 			this.game.getBattle().playerSpell((Monster) target.getActor(), spell);
 			return true;

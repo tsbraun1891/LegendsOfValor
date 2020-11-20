@@ -141,7 +141,20 @@ public class LegendsIO extends IO {
 							if(!tookTurn)
 								System.out.println("That piece is not in range! They can at most be one space away.");
 							break;
+
+						case 'C':
+						case 'c':
+							Spell spellToCast = this.selectSpell(scanner, (Hero) currentPiece.getActor());
+							if(spellToCast != null) {
+								int monsterIndex2 = this.safeGetInt("Please insert the number (x in \'Mx\') of the monster you would like to attack: ", scanner);
+								tookTurn = actions.castSpell(currentPiece, monsterIndex2, spellToCast);
+								if(!tookTurn)
+									System.out.println("That piece is not in range! They can at most be one space away.");
+							}								
+							else 
+								tookTurn = false;
 							
+							break;
 						default:
 							System.out.print("Invalid command input. ");
 							this.retry();
@@ -202,6 +215,29 @@ public class LegendsIO extends IO {
 			
 			
 			game = new LegendsGame(playerName, numPal, numSorc, numWar);
+		}
+
+		public Spell selectSpell(Scanner scanner, Hero hero) {
+			Inventory inv = hero.getInventory();
+			System.out.println(inv.toString());
+			
+			int spellIndex = this.safeGetInt("\n\nWhich spell would you like to use? ", scanner);
+		
+			if(spellIndex < 0 || spellIndex >= inv.getItems().size()) {
+				System.out.print("\n\nYou have entered an invalid index! ");
+				this.retry();
+				return null;
+			} else if(inv.getItems().get(spellIndex).getType() != Item.ItemType.SPELL) {
+				System.out.println("\n\nThat is not a spell! ");
+				this.retry();
+				return null;
+			} else if(hero.getMana() < ( (Spell) inv.getItems().get(spellIndex) ).getManaCost()) {
+				System.out.println("\n\nYou do not have enough mana for that spell! ");
+				this.retry();
+				return null;
+			} else {
+				return (Spell) inv.getItems().get(spellIndex);
+			}
 		}
 		
 		public void invalidMove() {
