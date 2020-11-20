@@ -30,16 +30,17 @@ public class LegendsIO extends IO {
 			
 			map = game.getBoard();
 			
-			System.out.println(map.toString());
-			
 			while(continuePlaying) {
 				boolean tookTurn = false;
 
+				actions.displayMap();
+				System.out.println("\nRound " + this.game.getBattle().getRound());
+				System.out.println("Turn " + this.game.getBattle().getTurn());
 				while(!tookTurn) {
 					if(this.game.getBattle().isPlayerTurn()) {
 						Piece currentPiece = game.getHeroPiece((Hero) game.getBattle().getTurnActor());
 				
-						System.out.print("\n\nPlease Input a command (Press H for help): ");
+						System.out.print("\nPlease Input a command for " + currentPiece.getActor().getName() + "(" + currentPiece.getIdentifier() + ") (Press H for help): ");
 						
 						String inputVal = scanner.next();	
 						
@@ -98,13 +99,18 @@ public class LegendsIO extends IO {
 							
 						case 'I':
 						case 'i':
-							this.displayInformation();
+							System.out.println(actions.displayPartyInformation());
+							break;
+
+						case 'U':
+						case 'u':
+							System.out.println(this.game.getBattle().toString());
 							break;
 							
 						case 'E':
 						case 'e':
-							this.displayInformation();
-							actions.manageEquipment(scanner, currentPiece);					
+							actions.manageEquipment(scanner, currentPiece);	
+							tookTurn = true;				
 							break;
 
 						case 'B':
@@ -130,7 +136,7 @@ public class LegendsIO extends IO {
 						case 'F':
 						case 'f':
 							int monsterIndex = this.safeGetInt("Please insert the number (x in \'Mx\') of the monster you would like to attack: ", scanner);
-							tookTurn = actions.attack(currentPiece, this.game.getMonsterPieces().get(monsterIndex));
+							tookTurn = actions.attack(currentPiece, monsterIndex);
 							
 							if(!tookTurn)
 								System.out.println("That piece is not in range! They can at most be one space away.");
@@ -141,8 +147,10 @@ public class LegendsIO extends IO {
 							this.retry();
 						}
 					} else {
-						// TODO: Implement Monster turn
-						// Also implement when monster dies
+						Piece currentPiece = game.getMonsterPiece((Monster) game.getBattle().getTurnActor());
+						System.out.print(currentPiece.getActor().getName() + "\'s (" + currentPiece.getIdentifier() + ") Turn: Type anything and press enter to continue... ");
+						scanner.next();
+						this.game.getBattle().monsterTurn();
 						tookTurn = true;
 					}
 					
@@ -154,18 +162,16 @@ public class LegendsIO extends IO {
 				}
 			}
 
+			actions.displayMap();
+
 			if(this.game.getBattle().checkBattleOver() == Battle.BattleState.VICTORY) {
 				System.out.println("The Heroes have defeated the Monsters!");
 			} else if(this.game.getBattle().checkBattleOver() == Battle.BattleState.DEFEAT) {
 				System.out.println("The Monsters have crushed the Heroes!");
 			}
 			
-			System.out.println("Thanks for playing!");
+			System.out.println("Thanks for playing!\n\n");
 			scanner.close();
-		}
-		
-		private void displayInformation() {
-			System.out.println(this.game.getBattle().toString());
 		}
 		
 		

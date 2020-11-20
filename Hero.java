@@ -6,8 +6,6 @@
  * @author Tanner Braun
  */
 
-// TODO: buff hero if they are on a space that buffs them
-// TODO: Send hero back to nexus if they faint
 // Will probably need to give hero board state
 public abstract class Hero extends Actor{
 	
@@ -18,15 +16,15 @@ public abstract class Hero extends Actor{
 		WARRIOR
 	}
 	
-	
+	private static final int hpPerLvl = 300;
 	private double mana, strength, dexterity, agility, coins, XP;
 	private Inventory inventory;	
-	private HeroClass heroClass;
+	private HeroClass heroClass;	
 	
 	
 	public Hero(String name, double startingMana, double startStrength, double startAgility, double startDexterity, double startingMoney, double startingXP, HeroClass heroClass) {
 		// We multiply the dodge chance by 100 here to keep with the convention that an actor has dodgeChance * .01 to dodge an attack
-		super(name, 1000, 1, 0, startAgility * 0.002 * 25);
+		super(name, hpPerLvl, 1, 0, startAgility * 0.002 * 25);
 		mana = startingMana;
 		strength = startStrength;
 		dexterity = startDexterity;
@@ -51,13 +49,13 @@ public abstract class Hero extends Actor{
 			this.setHP(this.getHP() + amount);
 	}
 	
-	// I decided to set Max HP and mana as Hero Level * 1000
+	// I decided to set Max HP and mana as Hero Level * hpPerLvl
 	public double maxHP() {
-		return this.getLevel() * 1000;
+		return this.getLevel() * hpPerLvl;
 	}
 	
 	public double maxMana() {
-		return this.getLevel() * 1000;
+		return this.getLevel() * hpPerLvl;
 	}
 	
 	/**
@@ -102,7 +100,7 @@ public abstract class Hero extends Actor{
 	private boolean unarmedAttack(Actor target) {
 		if(!target.tryToDodge()) {
 				
-			target.takeDamage(this.getStrength());
+			target.takeDamage(this, this.getStrength());
 			return true;						
 		} else {
 			System.out.println("\n" + this.getName() + "'s attack against " + target.getName() + " missed!");
@@ -124,8 +122,9 @@ public abstract class Hero extends Actor{
 	}
 
 	public void revive() {
-		this.isDefeated() = false;
-		// TODO: decide how much hp to give them
+		this.isDefeated = false;
+		// Revive them at not full health
+		this.setHP(this.maxHP()/2);
 	}
 
 	public void levelUp() {
@@ -199,10 +198,6 @@ public abstract class Hero extends Actor{
 	
 	public HeroClass getHeroClass() {
 		return heroClass;
-	}
-	
-	public void endOfRoundRegain() {
-		
 	}
 	
 	public String toString() {

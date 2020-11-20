@@ -10,7 +10,7 @@ public abstract class Actor implements Fighter{
 	private String name;
 	private double HP, defense, dodgeChance;
 	private int level, id;
-	private boolean isDefeated;
+	protected boolean isDefeated;
 	private static int numActors = 0;
 	
 	/**
@@ -40,7 +40,7 @@ public abstract class Actor implements Fighter{
 	 * @param damageAmount - amount of damage to do
 	 * @return actual damage done to the actor
 	 */
-	public double takeDamage(double damageAmount) {
+	public double takeDamage(Actor attacker, double damageAmount) {
 		// Reduce the amount of damage by this actor's defense
 		// Defense was kind of OP so I divided it by 2
 		double actualDamage = damageAmount - this.getDefense();
@@ -54,13 +54,23 @@ public abstract class Actor implements Fighter{
 		
 		// Set isDefeated to true if HP is <= 0
 		if(this.getHP() <= 0 ) {
-			isDefeated = true;
-			System.out.println("\n" + this.getName() + " was defeated!");
+			this.die(attacker);
 		}
 		
 		
 		
 		return actualDamage;
+	}
+
+	private void die(Actor attacker) {
+		isDefeated = true;
+		System.out.println("\n" + this.getName() + " was defeated by " + attacker.getName() + "!");
+
+		if(attacker instanceof Hero) {
+			Hero hero = (Hero) attacker;
+			hero.addCoins(this.level * 100);
+			hero.increaseXP(3*this.level);
+		}
 	}
 	
 	

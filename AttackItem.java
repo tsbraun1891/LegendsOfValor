@@ -45,7 +45,7 @@ public abstract class AttackItem extends Item{
 				return false;
 			} else {
 				
-				target.takeDamage(this.calculateAttack(this.getOwner()));
+				target.takeDamage(this.getOwner(), this.calculateAttack(this.getOwner()));
 				return true;
 			}			
 		} else {

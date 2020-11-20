@@ -1,7 +1,7 @@
 
 public interface Fighter {
 
-	public double takeDamage(double damageAmount);
+	public double takeDamage(Actor attacker, double damageAmount);
 	
 	public boolean tryToDodge();
 	

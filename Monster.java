@@ -39,7 +39,7 @@ public class Monster extends Actor{
 		
 		if(!target.tryToDodge()) {
 				
-			target.takeDamage(this.damage);			
+			target.takeDamage(this, this.damage);			
 			
 			return true;
 		} else {

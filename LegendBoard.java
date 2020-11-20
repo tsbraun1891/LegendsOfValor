@@ -127,17 +127,62 @@ public class LegendBoard extends Board{
 	/**
 	 * Does the same functionality as parent and also updates the map linking pieces to positions
 	 */
-	public int placePiece(Piece piece, int x, int y) {
-		int success = super.placePiece(piece, x, y);	
+	public int placePiece(Piece piece, int row, int col) {
+		int success = super.placePiece(piece, row, col);	
 		
-		
+		// Overwrite positions on the map
 		if(success != 0) {
-			this.pieceRows.put(piece, x);	
-			this.pieceCols.put(piece, y);
+			this.pieceRows.put(piece, row);	
+			this.pieceCols.put(piece, col);
+
+			// If hero, adjust hero stats if being placed on a tile of special type
+			if(piece.isHero()) {
+				Hero hero = (Hero) piece.getActor();
+				switch(this.getTypeOfSpace(row, col)) {
+					case BUSH:
+						hero.setDexterity(hero.getDexterity()*1.1);
+						break;
 			
+					case CAVE:
+						hero.setAgility(hero.getAgility()*1.1);
+						break;
+			
+					case KOULOU:
+						hero.setStrength(hero.getStrength()*1.1);
+						break;
+			
+					default:
+						break;
+				}
+			}
 		} 
-		
+
 		return success;
+	}
+
+	public void removePiece(Piece removePiece, int row, int col) {
+		super.removePiece(removePiece, row, col);
+
+		// If hero, adjust hero stats if being placed on a tile of special type
+		if(removePiece.isHero()) {
+			Hero hero = (Hero) removePiece.getActor();
+			switch(this.getTypeOfSpace(row, col)) {
+				case BUSH:
+					hero.setDexterity(hero.getDexterity()/1.1);
+					break;
+		
+				case CAVE:
+					hero.setAgility(hero.getAgility()/1.1);
+					break;
+		
+				case KOULOU:
+					hero.setStrength(hero.getStrength()/1.1);
+					break;
+		
+				default:
+					break;
+			}
+		}
 	}
 	
 	/**
@@ -147,11 +192,15 @@ public class LegendBoard extends Board{
 	 * @return
 	 */
 	public boolean inAttackRange(Piece attacker, Piece target) {
-		return Math.abs(this.getPieceRow(attacker) - this.getPieceRow(target)) <= 1 && Math.abs(this.getPieceCol(attacker) - this.getPieceCol(target)) <= 1;
+		return (this.monsterPieces.contains(target) || this.playerPieces.contains(target)) && Math.abs(this.getPieceRow(attacker) - this.getPieceRow(target)) <= 1 && Math.abs(this.getPieceCol(attacker) - this.getPieceCol(target)) <= 1;
 	}
 	
 	public void addMonsterPiece(Piece monsterPiece) {
 		this.monsterPieces.add(monsterPiece);
+	}
+
+	public void removeMonsterPiece(Piece monsterPiece) {
+		this.monsterPieces.remove(monsterPiece);
 	}
 	
 	public int getPieceRow(Piece piece) {

@@ -66,10 +66,7 @@ public class LegendsActions {
 			return false;
 		}
 		
-		rhet = board.movePieceTo(piece, moveRow, moveCol);
-		
-		displayMap();
-		
+		rhet = board.movePieceTo(piece, moveRow, moveCol);		
 		
 		return rhet;
 	}
@@ -87,7 +84,8 @@ public class LegendsActions {
 		System.out.println("C: Cast a spell at an enemy");
 		System.out.println("P: Open the market in the nexus");
 		System.out.println("E: Manage your equipment");
-		System.out.println("I: Display relevant information");
+		System.out.println("I: Display Party Information");
+		System.out.println("U: Display Battle Information");
 		System.out.println("M: Display the world map");
 		System.out.println("Q: Quit the game");
 	}
@@ -132,8 +130,14 @@ public class LegendsActions {
 		return true;
 	}
 	
-	public boolean attack(Piece attacker, Piece target) {
+	public boolean attack(Piece attacker, int monsterIndex) {
+
+		if(monsterIndex >= this.game.getMonsterPieces().size() || monsterIndex < 0) {
+			return false;
+		} 		
 		
+		Piece target = this.game.getMonsterPieces().get(monsterIndex);
+				
 		if(board.inAttackRange(attacker, target)) {
 			game.getBattle().playerAttack((Monster) target.getActor());
 			return true;
