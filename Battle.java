@@ -126,17 +126,22 @@ public class Battle {
 	public void monsterTurn() {
 		// TODO: completely change monster logic for monster turn
 		Monster monster = (Monster) this.getTurnActor();
-		
-		// Choose a random hero to attack
-		Random r = new Random();
-		Hero target = this.heroes.get(r.nextInt(this.heroes.size()));
-		
-		// Make sure they attack someone who has not fainted yet
-		while(target.isDefeated()) {
-			target = this.heroes.get(r.nextInt(this.heroes.size()));
+
+		Piece monsterPiece=this.game.getMonsterPiece(monster);
+
+		for(Hero target : this.heroes) {
+			//check if there's a hero in monster's attack range
+			Piece heroPiece=this.game.getHeroPiece(target);
+			if(this.game.getBoard().inAttackRange(monsterPiece,heroPiece)){
+				monster.attack(target);
+				nextTurn();
+				return;
+			}
 		}
-		
-		monster.attack(target);		
+
+		// move monster piece forward instead
+		this.game.getBoard().movePieceTo(monsterPiece, this.game.getBoard().getPieceRow(monsterPiece) + 1, this.game.getBoard().getPieceCol(monsterPiece));
+		nextTurn();	
 	}
 	
 	public void spawnNewMonsters() {
