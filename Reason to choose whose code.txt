@@ -1,5 +1,0 @@
-Tanner Braun & Zhengyu Zhang
-
-Reasons we choose Tanner's design:Better IO design,easy to extend and change logics of new game rules.
-
-Tanner's design has a better IO interface. The ternimal instructions of actions of the design are clear to read. And the design avoids overwhelming information outputs between two user commands. All classes extend IO class control the input/output information and decide which logical function should be invoked from the inputs. These classes are paired to classes of logical functions such as Market with MarketIO and Battle with BattleIO. The design makes codes more readable and we can modify less code segements when we want to change the game logic or add new game functions. For example,we only have to modify the code in monsterTurn() function of Battle class to change monster's logic. 
