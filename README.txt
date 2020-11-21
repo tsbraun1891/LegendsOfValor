@@ -2,10 +2,10 @@ LENGENDS: MONSTERS & HEROES
 Tanner Braun, tsbraun@bu.edu, U65930557
 
 COMPILATION:
-    Navigate to the folder containing all of the files for L:M&H and run javac *.java.
+    Navigate to the folder containing all of the files for Legends of Valorand run javac *.java.
 
 EXECUTION:
-    While still in the same folder as for compilation, run "java LegendsMonstersHeroes" and the program should start!
+    While still in the same folder as for compilation, run "java LegendsOfValor" and the program should start!
 
 ENTITIES:
 - Actor.java:
@@ -14,6 +14,10 @@ which can either be a player or an enemy.  Handles things they all
 share like taking damage, defense, dodge chance, etc. This works well
 because there are many ways in battle that both heroes and monsters 
 act similarly.
+- Fighter.java:
+    This is an interface that is implemented by Actor. It requires that
+an entity have certain functions that are needed in order to participate
+in a battle like attacking, dodging, and taking damage.
 - Monster.java:
     The monster class is a specific implementation of the Actor class
 that can represent many different types of monsters in an rpg.
@@ -38,6 +42,8 @@ they find weapons.
         The Warrior class represents a hero that has the warrior class. Warriors 
     specialize in the strength and agility stats.
 
+
+
 ITEMS:
 -Item.java:
     An item is any piece of equipment that can be equipped or bought in
@@ -45,6 +51,11 @@ a market square. Items all have a name, cost, required level, and
 an affect amount. This amount can be damage, attribute increase, or
 damage reduction. Item is an abstract class to be implemented by
 other specific types of items.
+-Buyable.java:
+    Buyable is an interface implemented by Item that lets you know 
+whether an entity is purchaseable by a hero or not. Buyable things
+must have a check to see whether a hero is allowed to purchase them
+or not, and must handle what happens to them when they are bought.
 -Armor.java:
     The armor class extends Item as it is a type of item
 that contributes to the defense of its wearer/owner.
@@ -72,7 +83,6 @@ also have an extra affect based on their spell type.
         The main thing that these classes do is implement attackTarget so that
     the spell's extra affects happen.
 
-
 LISTS:
 -ItemList.java, MonsterList.java, HeroList.java:
     In order to import the stat blocks for characters and items that we were given,
@@ -94,7 +104,9 @@ OVERWORLD:
     The Player class generally stores metadata around the user playing this game
 such as their specific piece and name.
 -Piece.java:
-    A piece is used to represent a player's location on a given board.
+    A piece is used to represent a player's location on a given board. For Legends of
+Valor it is linked to an Actor within the game, so that all actions taken by a piece
+can be easily transferrable to the actual character within the game.
 -Space.java:
     Space represents a space on a game board.  It keeps track of any pieces on the space
 and allows users to add and remove pieces from the space.
@@ -106,12 +118,14 @@ or impassable.
     Board represents a physical board by using a 2D array (of which you could opt to use only one dimension) composed
 of Space objects.  Board allows outside Objects to access specific spaces on the board given their coordinates.
 -LegendBoard.java:
-    LegendBoard is a reimplimentation of board for L:M&H. It now allows a user to access
-the type of a space and keeps track of the main party's position.
+    LegendBoard is a reimplimentation of board for Legends Of Valor. It now allows a user to access
+the type of a space and keeps track of the positions of all of the different Actors' pieces.
+LegendBoard also helps to find the distances between certain pieces to help for attack ranges.
 -LegendsGame.java:
     LegendsGame serves as a point where all of the data needed to
 run a game comes together. Through the LegendsGame class, a user
 can access all of the other relevant pieces needed to run a game.
+LegendsGame also helps to link Actors to their given pieces in the game.
 -LegendsIO.java:
     The LegendsIO class deals directly with the user and routing their
 commands to the proper game logic while also directing the user
@@ -122,9 +136,9 @@ is coupled closely with the LegendsActions class.
     This class is used to handle all of the possible actions of the player. It contains
 all of the necessary background logic and computations that need to be done
 for each action.
--LegendsMonstersHeroes.java:
-    LegendsMonsterHeroes is the jumping off point for a game of
-L:M&H. This class only serves to start up the game initially.
+-LegendsOfValor.java:
+    LegendsOfValor is the jumping off point for a game of Legends of
+Valor. This class only serves to start up the game initially.
 
 INVENTORY:
 -Inventory.java:
@@ -151,10 +165,10 @@ BATTLE:
 -Battle.java:
     The Battle Class represents an ongoing battle within the game
 world. It handles the AI behind the monsters and their attacks
-and deals with resolving a battle.
--BattleIO.java:
-    The BattleIO class is an extension of IO.  This class interacts with the player
-during a battle, and gets their commands over each round. On a hero's turn, the
-player has to select a target and a possible action for that target.
+and deals with resolving a battle. The Battle class handles all
+of the necessary game logic for taking actions that Fighter 
+Objects can take when inside of a battle. For Legends of Valor, 
+the battle is constantly ongoing on the world map, so the game
+ends when the battle ends.
 
 

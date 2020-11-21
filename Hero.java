@@ -16,7 +16,7 @@ public abstract class Hero extends Actor{
 		WARRIOR
 	}
 	
-	private static final int hpPerLvl = 300;
+	private static final int hpPerLvl = 150;
 	private double mana, strength, dexterity, agility, coins, XP;
 	private Inventory inventory;	
 	private HeroClass heroClass;	

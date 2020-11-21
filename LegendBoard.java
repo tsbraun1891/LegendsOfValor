@@ -1,3 +1,10 @@
+/**
+ * LegendBoard is a reimplimentation of board for Legends Of Valor. It now allows a user to access
+ * the type of a space and keeps track of the positions of all of the different Actors' pieces.
+ * LegendBoard also helps to find the distances between certain pieces to help for attack
+ * ranges.
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

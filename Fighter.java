@@ -1,3 +1,7 @@
+/**
+ * The Fighter interface must be implemented by anyone who plans
+ * on participating in battles.
+ */
 
 public interface Fighter {
 

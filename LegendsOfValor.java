@@ -1,6 +1,6 @@
 /**
- * LegendsMonsterHeroes is the jumping off point for a game of
- * L:M&H. This class only serves to start up the game initially
+ * LegendsOfValor is the jumping off point for a game of Legends of
+ * Valor. This class only serves to start up the game initially
  * @author Tanner Braun
  *
  */

@@ -1,7 +1,7 @@
 /**
  * LegendSpace is an extension of the space class that adds a 
- * space's type to the board. Spaces can be common, a market,
- * or impassable.
+ * space's type to the board. Spaces can be a variety of different
+ * types which each may have its own unique affect.
  * @author Tanner Braun
  *
  */

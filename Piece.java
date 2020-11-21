@@ -1,6 +1,8 @@
 /**
  * Piece represents a player's piece in a game. A piece has an identifier that
  * keeps track of the 'type' of a piece and a description describing what the piece does.
+ * A Piece also has an Actor that it represents within a game which can be used to
+ * link the character and their state on the board.
  * @author Tanner Braun
  *
  */
