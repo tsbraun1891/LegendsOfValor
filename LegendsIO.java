@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class LegendsIO extends IO {
 	
 		private LegendsGame game;
-		private LegendBoard map;
 		private LegendsActions actions;
 		
 		public LegendsIO() {
@@ -25,10 +24,8 @@ public class LegendsIO extends IO {
 			this.getStartingInfo(scanner);
 			
 			continuePlaying = true;
-			
+
 			actions = game.getActionHandler();
-			
-			map = game.getBoard();
 			
 			while(continuePlaying) {
 				boolean tookTurn = false;

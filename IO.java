@@ -5,7 +5,6 @@
  * input or display important information to a user.
  */
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public abstract class IO {

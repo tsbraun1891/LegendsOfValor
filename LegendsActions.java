@@ -19,12 +19,10 @@ public class LegendsActions {
 	}
 	
 	private LegendsGame game;
-	private Player player;
 	private LegendBoard board;
 	
 	public LegendsActions(LegendsGame game, Player player, LegendBoard board) {
 		this.game = game;
-		this.player = player;
 		this.board = board;
 	}
 	

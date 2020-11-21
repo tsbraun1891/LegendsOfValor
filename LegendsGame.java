@@ -6,9 +6,7 @@
  *
  */
 
-import javax.swing.text.html.HTMLDocument;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class LegendsGame extends RPG{
 	private LegendBoard board;
